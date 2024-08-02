@@ -378,10 +378,10 @@ export class Multicall {
     options: ContractCallOptions
   ): Promise<AggregateResponse> {
     const web3 = this.getTypedOptions<MulticallOptionsWeb3>().web3Instance;
-    const networkId = await web3.eth.net.getId();
+
     const contract = new web3.eth.Contract(
       Multicall.ABI,
-      this.getContractBasedOnNetwork(networkId)
+      this.getContractBasedOnNetwork(options?.chainID||1)
     );
     const callParams = [];
     if (options.blockNumber) {
@@ -538,7 +538,7 @@ export class Multicall {
    * @param tryAggregate The tryAggregate
    * @param network The network
    */
-  private getContractBasedOnNetwork(network: Networks): string {
+  private getContractBasedOnNetwork(network: Networks|number): string {
     // if they have overriden the multicall custom contract address then use that
     if (this._options.multicallCustomContractAddress) {
       return this._options.multicallCustomContractAddress;
